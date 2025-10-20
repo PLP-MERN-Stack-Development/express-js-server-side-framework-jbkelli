@@ -115,14 +115,14 @@ app.get('/api/products', asyncHandler(async (req, res) => {
     total: results.length,
     data: { products: paged }
   });
-})));
+}));
 
 // GET /api/products/:id
 app.get('/api/products/:id', asyncHandler(async (req, res, next) => {
   const product = products.find(p => p.id === req.params.id);
   if (!product) return next(new NotFoundError('Product not found'));
   res.json({ status: 'success', data: { product } });
-})));
+}));
 
 // POST /api/products (protected)
 app.post('/api/products', requireApiKey, validateProduct, asyncHandler(async (req, res) => {
@@ -130,7 +130,7 @@ app.post('/api/products', requireApiKey, validateProduct, asyncHandler(async (re
   const newProduct = { id: uuidv4(), name, description, price, category, inStock };
   products.push(newProduct);
   res.status(201).json({ status: 'success', data: { product: newProduct } });
-})));
+}));
 
 // PUT /api/products/:id (protected)
 app.put('/api/products/:id', requireApiKey, validateProduct, asyncHandler(async (req, res, next) => {
@@ -139,7 +139,7 @@ app.put('/api/products/:id', requireApiKey, validateProduct, asyncHandler(async 
   const { name, description = '', price, category, inStock } = req.body;
   products[idx] = { ...products[idx], name, description, price, category, inStock };
   res.json({ status: 'success', data: { product: products[idx] } });
-})));
+}));
 
 // DELETE /api/products/:id (protected)
 app.delete('/api/products/:id', requireApiKey, asyncHandler(async (req, res, next) => {
@@ -147,13 +147,13 @@ app.delete('/api/products/:id', requireApiKey, asyncHandler(async (req, res, nex
   if (idx === -1) return next(new NotFoundError('Product not found'));
   const removed = products.splice(idx, 1)[0];
   res.json({ status: 'success', data: { product: removed } });
-})));
+}));
 
 // GET /api/products/stats - count by category
 app.get('/api/products/stats', asyncHandler(async (req, res) => {
   const stats = products.reduce((acc, p) => { acc[p.category] = (acc[p.category] || 0) + 1; return acc; }, {});
   res.json({ status: 'success', data: { countByCategory: stats, total: products.length } });
-})));
+}));
 
 // Global error handler
 app.use((err, req, res, next) => {
